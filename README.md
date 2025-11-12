@@ -40,7 +40,7 @@ This method works on Linux, macOS, and Windows. macOS and Windows users should i
 
 Linux/Mac: 
 ```bash
-docker run -it -u $(id -u):$(id -g) --volume $(pwd):/workspace --platform linux/amd64 ghcr.io/snapdragon-toolchain/arm64-android:v0.1
+docker run -it -u $(id -u):$(id -g) --volume $(pwd):/workspace --platform linux/amd64 ghcr.io/snapdragon-toolchain/arm64-android:v0.1 --memory 16g
 [d]/> cd /workspace
 ```
 
