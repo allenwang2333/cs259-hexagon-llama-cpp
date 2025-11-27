@@ -1,5 +1,4 @@
 #!/bin/sh
-#
 
 # Basedir on device
 basedir=/data/local/tmp/llama.cpp
@@ -12,11 +11,13 @@ branch=.
 adbserial=
 [ "$S" != "" ] && adbserial="-s $S"
 
-model="Llama-3.2-3B-Instruct-Q4_0.gguf"
+# --- CHANGE 1: Update Default Model to Qwen ---
+model="qwen3-vl-2b-instruct-q4_k_m.gguf"
 [ "$M" != "" ] && model="$M"
 
-mmproj="something.gguf"
-[ "$M" != "" ] && mmproj="$MM"
+mmproj="mmproj-model-f16.gguf"
+[ "$MM" != "" ] && mmproj="$MM"
+# ---------------------------------------------
 
 device="HTP0"
 [ "$D" != "" ] && device="$D"
@@ -42,7 +43,7 @@ nhvx=
 ndev=
 [ "$NDEV" != "" ] && ndev="GGML_HEXAGON_NDEV=$NDEV"
 
-# --- new: parse command-line args for image and prompt ---
+# --- Parse command-line args for image and prompt ---
 while [ "$1" != "" ]; do
   case $1 in
     --image )  shift; image=$1 ;;
@@ -52,21 +53,23 @@ while [ "$1" != "" ]; do
   shift
 done
 
-set -x
-
-
+# --- CHANGE 2: Qwen Specific Flags ---
+# 1. -ctk q8_0 -ctv q8_0 : Use 8-bit cache for accuracy (Q4 breaks OCR)
+# 2. -n 128              : Allow longer answers for OCR text
+# 3. -fa                 : Flash Attention is mandatory for Qwen
+# 4. Removed --chat-template: handled in Python
+# -------------------------------------
 
 adb $adbserial shell " \
   cd $basedir; ulimit -c unlimited;        \
     LD_LIBRARY_PATH=$basedir/$branch/lib   \
     ADSP_LIBRARY_PATH=$basedir/$branch/lib \
-    $experimental $sched $opmask $profile $nhvx $ndev           \
-      ./$branch/bin/llama-mtmd-cli -m $basedir/../gguf/$model       \
-         --mmproj $basedir/../gguf/$mmproj --no-mmproj-offload    \
-         --batch-size 1 -fa on -n 30 --no-mmap -ctk q4_0 -ctv q4_0\
-         --device $device --temp 0\
-         --chat-template deepseek \
+    $experimental $sched $opmask $profile $nhvx $ndev            \
+      ./$branch/bin/llama-mtmd-cli -m $basedir/../gguf/$model        \
+         --mmproj $basedir/../gguf/$mmproj --no-mmproj-offload     \
+         --batch-size 1 -n 128 --no-mmap \
+         -fa \
+         -ctk q8_0 -ctv q8_0 \
+         --device $device --temp 0.1 \
          --image \"$image\" -p \"$prompt\" \
 "
-
-#read -p "Press Enter to exit"
