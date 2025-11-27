@@ -12,13 +12,13 @@ branch=.
 adbserial=
 [ "$S" != "" ] && adbserial="-s $S"
 
-model="Llama-3.2-3B-Instruct-Q4_0.gguf"
+model="Qwen3VL-2B-Instruct-Q8_0.gguf"
 [ "$M" != "" ] && model="$M"
 
-mmproj="something.gguf"
+mmproj="mmproj-Qwen3VL-2B-Instruct-Q8_0.gguf"
 [ "$M" != "" ] && mmproj="$MM"
 
-device="HTP0"
+device="none"
 [ "$D" != "" ] && device="$D"
 
 verbose=
