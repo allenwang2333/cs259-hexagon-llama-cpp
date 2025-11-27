@@ -2,6 +2,7 @@ import torch
 import os
 import sys
 import random
+import evaluate
 
 import numpy as np
 from tqdm import tqdm
@@ -66,7 +67,7 @@ def main():
         question = "final_input_prompt"
     elif "textvqa" in args.data_path:
         dataset = load_dataset("lmms-lab/textvqa", split="validation")
-        dataset = dataset.select(range(100))
+        dataset = dataset.select(range(10))
         question = "question"
     else:
         raise NotImplementedError
@@ -89,6 +90,9 @@ def main():
     total_time_ms = []
     total_token = []
     correct = []
+    rouge_score = []
+
+    rouge = evaluate.load("rouge")
 
     for sample in tqdm(dataset):
 
@@ -133,7 +137,12 @@ def main():
                 eval_time_per_token_ms.append(results["eval_time_per_token_ms"])
                 total_time_ms.append(results["total_time_ms"])
                 total_token.append(results["total_tokens"])
+                score = rouge.compute(predictions = [output.lower()],
+                                      references = [sample["answers"]])
 
+                rouge_score.append(score["rougeL"])
+                print(correct[-1], score)
+                print(sample["answers"])
             except subprocess.CalledProcessError as e:
                 print("--- SCRIPT FAILED ---", file=sys.stderr)
                 print(f"Exit Code: {e.returncode}", file=sys.stderr)
@@ -157,6 +166,10 @@ def main():
     print(np.mean(total_time_ms))
     print("average total token")
     print(np.mean(total_token))
+    print("average rouge score")
+    print(np.mean(rouge_score))
+    print("Inference Speed")
+    print(np.mean(total_token)/np.mean(total_time_ms))
 
 
 
