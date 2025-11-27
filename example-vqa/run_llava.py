@@ -20,7 +20,7 @@ import re
 import json
 import numpy as np
 from tqdm import tqdm
-import shlex
+
 
 def parse_output(output):
     # TODO you can implement your own parse function
@@ -103,7 +103,12 @@ def main():
         if sample['image']:
             image = sample['image'].convert("RGB")
             image.save("image.jpg", "JPEG")
-            prompt = sample[question]
+            raw_q = sample[question]
+
+            prompt = (
+                "Answer the question in one word or phrase, no explanation. "
+                f"{raw_q}"
+            )
             print(prompt)
             prompt = prompt.replace('"', '\\"').replace("`", "\\`").replace("$", "\\$")
             # use bash command "adb push image.jpg /data/local/tmp/image.jpg" to upload image to file
@@ -111,7 +116,7 @@ def main():
             try:
                 # you might need to change the command below if you use ubuntu or mac or other bash
                 out = subprocess.run(
-                    ["C:\Program Files\Git\\bin\\bash.exe", "./run-mtmd-cli.sh", "--image", REMOTE_IMG, "--prompt", prompt],
+                    ["./run-mtmd-cli.sh", "--image", REMOTE_IMG, "--prompt", prompt],
                     text=True, capture_output=True, check=True
                 )
                 output = parse_output(out.stdout)

@@ -63,8 +63,10 @@ adb $adbserial shell " \
     $experimental $sched $opmask $profile $nhvx $ndev           \
       ./$branch/bin/llama-mtmd-cli -m $basedir/../gguf/$model       \
          --mmproj $basedir/../gguf/$mmproj --no-mmproj-offload    \
-         --batch-size 1 -fa on -n 30 --no-mmap -ctk q4_0 -ctv q4_0\
-         --device $device --temp 0\
+         --batch-size 512 -fa on -n 30 --no-mmap \
+         -t 6\
+         -ctk q4_0 -ctv q4_0\
+         --device $device --temp 0.1\
          --chat-template deepseek \
          --image \"$image\" -p \"$prompt\" \
 "
