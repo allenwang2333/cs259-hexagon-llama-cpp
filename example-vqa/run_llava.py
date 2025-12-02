@@ -21,6 +21,11 @@ import json
 import numpy as np
 from tqdm import tqdm
 
+from PIL import Image, ImageOps # Make sure to import ImageOps
+
+MAX_SIZE = 784
+SYSTEM_PROMPT = "Answer the question with a single word or short phrase. Do not provide explanations."
+
 
 def parse_output(output):
     # TODO you can implement your own parse function
@@ -102,13 +107,25 @@ def main():
 
         if sample['image']:
             image = sample['image'].convert("RGB")
+
+            # resize to max size (512, 512)
+            image.thumbnail((MAX_SIZE, MAX_SIZE), Image.Resampling.LANCZOS)
+
+            # resize to multiple of 16
+            w, h = image.size
+            new_w = (w // 14) * 14
+            new_h = (h // 14) * 14
+            if new_w > 0 and new_h > 0:
+                image = image.resize((new_w, new_h), Image.Resampling.LANCZOS)
+            
             image.save("image.jpg", "JPEG")
             raw_q = sample[question]
 
             prompt = (
-                "Answer the question in one word or phrase, no explanation. "
-                f"{raw_q}"
+                 "Answer the question in one word or phrase, no explanation. "
+                 f"{raw_q}"
             )
+            #prompt = f"{SYSTEM_PROMPT} {raw_q}"
             print(prompt)
             prompt = prompt.replace('"', '\\"').replace("`", "\\`").replace("$", "\\$")
             # use bash command "adb push image.jpg /data/local/tmp/image.jpg" to upload image to file
@@ -117,7 +134,7 @@ def main():
                 # you might need to change the command below if you use ubuntu or mac or other bash
                 out = subprocess.run(
                     ["./run-mtmd-cli.sh", "--image", REMOTE_IMG, "--prompt", prompt],
-                    text=True, capture_output=True, check=True
+                    text=True, capture_output=True, check=True, encoding="utf-8", errors="replace"
                 )
                 output = parse_output(out.stdout)
                 print(output)

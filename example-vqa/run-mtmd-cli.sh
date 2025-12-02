@@ -12,7 +12,7 @@ branch=.
 adbserial=
 [ "$S" != "" ] && adbserial="-s $S"
 
-model="Qwen3VL-2B-Instruct-Q8_0.gguf"
+model="Qwen3-VL-2B-Instruct-q8_0-LORA.gguf"
 [ "$M" != "" ] && model="$M"
 
 mmproj="mmproj-Qwen3VL-2B-Instruct-Q8_0.gguf"
