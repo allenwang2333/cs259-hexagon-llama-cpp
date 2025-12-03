@@ -1,1 +1,1 @@
-"main: loading model: /data/local/tmp/llama.cpp/../gguf/Qwen3-VL-2B-Instruct-q4_0-LORA.gguf\nencoding image slice...\nimage slice encoded in 10017 ms\ndecoding image batch 1/1, n_tokens_batch = 425\nimage decoded (batch 1/1) in 2711 ms\n\nunanswerable\n\n\n"
+"main: loading model: /data/local/tmp/llama.cpp/../gguf/Qwen3-VL-2B-Instruct-q4_0-LORA.gguf\nencoding image slice...\nimage slice encoded in 2864 ms\ndecoding image batch 1/1, n_tokens_batch = 216\nimage decoded (batch 1/1) in 1101 ms\n\nbudsweiser king of beer 1876\n\n\n\n\n"

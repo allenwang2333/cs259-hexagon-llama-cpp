@@ -54,22 +54,12 @@ done
 
 set -x
 
+
+
 adb $adbserial shell " \
   cd $basedir; ulimit -c unlimited;        \
     LD_LIBRARY_PATH=$basedir/$branch/lib   \
     ADSP_LIBRARY_PATH=$basedir/$branch/lib \
     $experimental $sched $opmask $profile $nhvx $ndev           \
-      ./$branch/bin/llama-mtmd-cli -m $basedir/../gguf/$model       \
-         --mmproj $basedir/../gguf/$mmproj --no-mmproj-offload    \
-         --batch-size 512 -fa on -n 30 \
-         -t 8 -tb 6 \
-          --prio 3 --cpu-strict 1 \
-          --poll 100 \
-          -kvu \
-         -ctk q4_0 -ctv q4_0\
-         --device $device --temp 0.1\
-         --chat-template deepseek \
-         --image \"$image\" -p \"$prompt\" \
+      ./$branch/bin/llama-mtmd-cli --list-devices
 "
-
-#read -p "Press Enter to exit"

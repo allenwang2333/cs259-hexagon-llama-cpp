@@ -23,7 +23,7 @@ from tqdm import tqdm
 
 from PIL import Image, ImageOps # Make sure to import ImageOps
 
-MAX_SIZE = 784
+MAX_SIZE = 560
 SYSTEM_PROMPT = "Answer the question with a single word or short phrase. Do not provide explanations."
 
 
@@ -72,7 +72,7 @@ def main():
         question = "final_input_prompt"
     elif "textvqa" in args.data_path:
         dataset = load_dataset("lmms-lab/textvqa", split="validation")
-        dataset = dataset.select(range(10))
+        dataset = dataset.select(range(100))
         question = "question"
     else:
         raise NotImplementedError
