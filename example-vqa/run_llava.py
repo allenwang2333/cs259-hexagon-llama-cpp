@@ -23,8 +23,8 @@ from tqdm import tqdm
 
 from PIL import Image, ImageOps # Make sure to import ImageOps
 
-MAX_SIZE = 560
-SYSTEM_PROMPT = "Answer the question with a single word or short phrase. Do not provide explanations."
+MAX_SIZE = 448
+SYSTEM_PROMPT = "Answer with a single word or short phrase. "
 
 
 def parse_output(output):
@@ -122,7 +122,7 @@ def main():
             raw_q = sample[question]
 
             prompt = (
-                 "Answer the question in one word or phrase, no explanation. "
+                 "Answer the question in one word or phrase. "
                  f"{raw_q}"
             )
             #prompt = f"{SYSTEM_PROMPT} {raw_q}"

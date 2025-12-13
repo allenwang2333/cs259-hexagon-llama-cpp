@@ -63,9 +63,11 @@ adb $adbserial shell " \
          --mmproj $basedir/../gguf/$mmproj --no-mmproj-offload    \
          --batch-size 512 -fa on -n 30 \
          -t 8 -tb 6 \
+          --no-mmap \
           --prio 3 --cpu-strict 1 \
-          --poll 100 \
           -kvu \
+          --no-kv-offload \
+          --mlock \
          -ctk q4_0 -ctv q4_0\
          --device $device --temp 0.1\
          --chat-template deepseek \
